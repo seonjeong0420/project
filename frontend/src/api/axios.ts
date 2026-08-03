@@ -1,5 +1,5 @@
-import axios from "axios";
-import { getToken, removeToken, setToken } from "@/utils/token";
+import axios from 'axios';
+import { getToken, removeToken, setToken } from '@/utils/token';
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -27,7 +27,6 @@ api.interceptors.request.use((config) => {
 
 // Response interceptor
 let isRefreshing = false;
-
 let requests: any[] = [];
 
 api.interceptors.response.use(
@@ -52,30 +51,27 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const response = await axios.post(
+        const { data } = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
-
           {},
-
           {
             withCredentials: true,
           },
         );
 
-        const newToken = response.data.accessToken;
+        const newToken = data.accessToken;
 
         setToken(newToken);
 
-        requests.forEach((callback) => callback(newToken));
-
+        // requests.forEach((callback) => callback(newToken));
         requests = [];
+        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
 
         return api(originalRequest);
       } catch (error) {
         removeToken();
 
-        window.location.href = "/login";
-
+        window.location.href = '/login';
         return Promise.reject(error);
       } finally {
         isRefreshing = false;

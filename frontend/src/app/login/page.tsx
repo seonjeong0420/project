@@ -1,14 +1,11 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, LoginFormValues } from "@/schemas/auth.schema";
-import { useLogin } from "@/hooks/useLogin";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginSchema, LoginFormValues } from '@/schemas/auth.schema';
+import { useLogin } from '@/hooks/useLogin';
 
 const LoginPage = () => {
-  const router = useRouter();
-  const loginMutation = useLogin();
   const {
     register,
     handleSubmit,
@@ -16,22 +13,14 @@ const LoginPage = () => {
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
-
+  const { mutate, isPending } = useLogin();
   const onSubmit = (data: LoginFormValues) => {
-    loginMutation.mutate(data, {
-      onSuccess() {
-        router.push("/dashboard");
-      },
-      onError(error: any) {
-        alert(error.response?.data?.message ?? "로그인 실패");
-      },
-    });
+    mutate(data);
   };
-
   return (
     <div
       className="
@@ -52,23 +41,17 @@ gap-4
       >
         <h1 className="text-2xl font-bold">로그인</h1>
 
-        <input placeholder="이메일" {...register("email")} />
+        <input placeholder="이메일" {...register('email')} />
 
         {errors.email && <p className="text-red-500">{errors.email.message}</p>}
 
-        <input
-          type="password"
-          placeholder="비밀번호"
-          {...register("password")}
-        />
+        <input type="password" placeholder="비밀번호" {...register('password')} />
 
-        {errors.password && (
-          <p className="text-red-500">{errors.password.message}</p>
-        )}
+        {errors.password && <p className="text-red-500">{errors.password.message}</p>}
 
         <button
           type="submit"
-          disabled={loginMutation.isPending}
+          disabled={isPending}
           className="
 rounded
 bg-black
@@ -76,7 +59,7 @@ p-2
 text-white
 "
         >
-          {loginMutation.isPending ? "로그인중..." : "로그인"}
+          {isPending ? '로그인중...' : '로그인'}
         </button>
       </form>
     </div>
