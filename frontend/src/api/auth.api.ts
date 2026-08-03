@@ -3,7 +3,6 @@ import { LoginRequest, LoginResponse, SignupRequest, User } from '@/types/auth';
 
 export const loginApi = async (body: LoginRequest) => {
   const { data } = await api.post<LoginResponse>('/auth/login', body);
-  console.log('loginApi data', data);
   return data;
 };
 
