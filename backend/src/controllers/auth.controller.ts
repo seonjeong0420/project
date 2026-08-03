@@ -1,8 +1,9 @@
-import jwt from "jsonwebtoken";
-import { Request, Response } from "express";
-import bcrypt from "bcrypt";
-import { prisma } from "../prisma/client";
-import { createAccessToken, createRefreshToken } from "../utils/jwt";
+import jwt from 'jsonwebtoken';
+import { Request, Response } from 'express';
+import bcrypt from 'bcrypt';
+import { prisma } from '../prisma/client';
+import { createAccessToken, createRefreshToken } from '../utils/jwt';
+import { AuthRequest } from '../middleware/auth.middleware';
 
 // 회원가입
 export const signup = async (req: Request, res: Response) => {
@@ -17,7 +18,7 @@ export const signup = async (req: Request, res: Response) => {
 
     if (existUser) {
       return res.status(409).json({
-        message: "이미 가입된 이메일입니다.",
+        message: '이미 가입된 이메일입니다.',
       });
     }
 
@@ -42,7 +43,7 @@ export const signup = async (req: Request, res: Response) => {
     console.error(error);
 
     return res.status(500).json({
-      message: "회원가입 실패",
+      message: '회원가입 실패',
     });
   }
 };
@@ -61,7 +62,7 @@ export const login = async (req: Request, res: Response) => {
 
     if (!user) {
       return res.status(401).json({
-        message: "이메일 또는 비밀번호가 올바르지 않습니다.",
+        message: '이메일 또는 비밀번호가 올바르지 않습니다.',
       });
     }
 
@@ -74,7 +75,7 @@ export const login = async (req: Request, res: Response) => {
 
     if (!isMatch) {
       return res.status(401).json({
-        message: "이메일 또는 비밀번호가 올바르지 않습니다.",
+        message: '이메일 또는 비밀번호가 올바르지 않습니다.',
       });
     }
 
@@ -105,7 +106,7 @@ export const login = async (req: Request, res: Response) => {
 
     // ⭐ Refresh Token Cookie 저장
     res.cookie(
-      "refreshToken",
+      'refreshToken',
 
       refreshToken,
 
@@ -115,7 +116,7 @@ export const login = async (req: Request, res: Response) => {
         secure: false,
         // production에서는 true
 
-        sameSite: "lax",
+        sameSite: 'lax',
 
         maxAge: 1000 * 60 * 60 * 24 * 7,
       },
@@ -136,7 +137,7 @@ export const login = async (req: Request, res: Response) => {
     console.error(error);
 
     return res.status(500).json({
-      message: "로그인 실패",
+      message: '로그인 실패',
     });
   }
 };
@@ -148,7 +149,7 @@ export const refresh = async (req: Request, res: Response) => {
 
     if (!token) {
       return res.status(401).json({
-        message: "refresh token 없음",
+        message: 'refresh token 없음',
       });
     }
 
@@ -170,7 +171,7 @@ export const refresh = async (req: Request, res: Response) => {
 
     if (!user || user.refreshToken !== token) {
       return res.status(401).json({
-        message: "refresh token 오류",
+        message: 'refresh token 오류',
       });
     }
 
@@ -187,7 +188,7 @@ export const refresh = async (req: Request, res: Response) => {
     console.error(error);
 
     return res.status(401).json({
-      message: "refresh 실패",
+      message: 'refresh 실패',
     });
   }
 };
@@ -209,16 +210,47 @@ export const logout = async (req: Request, res: Response) => {
       });
     }
 
-    res.clearCookie("refreshToken");
+    res.clearCookie('refreshToken');
 
     return res.status(200).json({
-      message: "logout success",
+      message: 'logout success',
     });
   } catch (error) {
     console.error(error);
 
     return res.status(500).json({
-      message: "logout 실패",
+      message: 'logout 실패',
+    });
+  }
+};
+
+// 로그인 사용자 조회
+export const me = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: req.user!.id,
+      },
+
+      select: {
+        id: true,
+        email: true,
+        name: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        message: '사용자를 찾을 수 없습니다.',
+      });
+    }
+
+    return res.json(user);
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: '사용자 조회 실패',
     });
   }
 };
