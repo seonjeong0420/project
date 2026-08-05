@@ -3,7 +3,6 @@
 import { ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
-import { getToken } from '@/utils/token';
 
 type Props = {
   children: ReactNode;
@@ -11,13 +10,21 @@ type Props = {
 
 const AuthGuard = ({ children }: Props) => {
   const router = useRouter();
-  const user = useAuthStore((state) => state.user);
+  const {user,initialized} = useAuthStore();
 
   useEffect(() => {
-    if (!getToken()) {
+    if(initialized && !user) {
       router.replace('/login');
     }
-  }, [user]);
+  }, [user, router, initialized]);
+
+  if(!initialized) {
+    return null;
+  }
+
+  if (!user) {
+    return null;
+  }
 
   return children;
 };

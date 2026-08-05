@@ -9,14 +9,19 @@ type Props = {
 };
 
 const AuthProvider = ({ children }: Props) => {
-  const setUser = useAuthStore((state) => state.login);
-  const { data: user } = useMe();
+  const login = useAuthStore((state) => state.login);
+  const setInitialized = useAuthStore((state) => state.setInitialized);
+  const { data: user, isPending } = useMe();
 
   useEffect(() => {
     if (user) {
-      setUser(user);
+      login(user);
     }
-  }, [user, setUser]);
+
+    if(!isPending) {
+      setInitialized();
+    }
+  }, [user, isPending, login, setInitialized]);
 
   return children;
 };
