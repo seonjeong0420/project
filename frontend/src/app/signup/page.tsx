@@ -3,8 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signupSchema, SignupFormValues } from '@/schemas/auth.schema';
 import { useSignup } from '@/hooks/useSignup';
+import { SignupFormValues, signupSchema } from '@/schemas/auth.schema';
 
 const SignupPage = () => {
   const router = useRouter();
@@ -52,7 +52,11 @@ const SignupPage = () => {
 
         {errors.name && <p className="text-red-500">{errors.name.message}</p>}
 
-        <button type="submit" disabled={signupMutation.isPending} className="rounded bg-black p-2 text-white">
+        <button
+          type="submit"
+          disabled={signupMutation.isPending}
+          className="rounded bg-black p-2 text-white"
+        >
           {signupMutation.isPending ? '가입중...' : '회원가입'}
         </button>
       </form>

@@ -1,12 +1,16 @@
-import AuthGuard from "@/components/AuthGuard";
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
+import AuthGuard from '@/components/AuthGuard';
+import CategoryModal from './features/category/CategoryModal';
 
-type Props = { children: ReactNode };
+type Props = {
+  children: ReactNode;
+};
 
 const DashboardLayout = ({ children }: Props) => {
   return (
     <AuthGuard>
       <section>{children}</section>
+      <CategoryModal />
     </AuthGuard>
   );
 };
