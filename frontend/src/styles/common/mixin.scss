@@ -1,0 +1,46 @@
+.g_ir {
+  display: block;
+  overflow: hidden;
+  width: 0;
+  height: 0;
+  font-size: 1px;
+  line-height: 0;
+  color: transparent;
+}
+.g_screenout {
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  clip: rect(0, 0, 0, 0);
+}
+.g_ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  width: 100%;
+}
+@mixin ellipsisMulti($line, $lineheight) {
+  $maxHeight: calc(($lineheight * $line) / 10);
+  overflow: hidden;
+  display: -webkit-box;
+  max-height: #{$maxHeight}rem;
+  line-height: #{$lineheight * 0.1}rem;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $line;
+  word-break: break-word;
+  word-wrap: break-word;
+}
+
+@mixin retina($width, $height, $img-file) {
+  display: inline-flex;
+  width: #{$width}px;
+  height: #{$height}px;
+  background-image: url('/assets/images/#{$img-file}@2x.png');
+  background-size: #{$width}px #{$height}px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
