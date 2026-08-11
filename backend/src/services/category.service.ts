@@ -1,5 +1,6 @@
 import { prisma } from "../prisma/client";
 import { CreateCategoryDto, UpdateCategoryDto } from "../types/category";
+import { category } from "../controllers/chart.controller";
 
 // 목록 조회
 
@@ -58,17 +59,36 @@ export const updateCategory = async (
 };
 
 // 삭제
-
-export const deleteCategory = async (
-  userId: string,
-
-  id: string,
-) => {
-  return prisma.category.delete({
+export const deleteCategory = async (userId: string, id: string) => {
+  // 1. 현재 사용자의 카테고리인지 확인
+  const category = await prisma.category.findFirst({
     where: {
       id,
-
       userId,
+    },
+  });
+
+  if (!category) {
+    throw new Error("카테고리를 찾을 수 없습니다.");
+  }
+
+  // 2. 해당 카테고리를 사용하는 Transaction 확인
+  const transactionCount = await prisma.transaction.count({
+    where: {
+      categoryId: id,
+      userId,
+    },
+  });
+
+  // 3. 사용 중인 카테고리는 삭제하지 않음
+  if (transactionCount > 0) {
+    throw new Error("사용 중인 카테고리는 삭제할 수 없습니다.");
+  }
+
+  // 4. 삭제
+  return prisma.category.delete({
+    where: {
+      id: category.id,
     },
   });
 };

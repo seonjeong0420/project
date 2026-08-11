@@ -64,7 +64,6 @@ export const updateCategory = async (
 };
 
 // DELETE /categories/:id
-
 export const deleteCategory = async (
   req: Request<{ id: string }>,
   res: Response,
@@ -72,16 +71,32 @@ export const deleteCategory = async (
   try {
     const userId = req.user!.id;
 
-    await categoryService.deleteCategory(
-      userId,
-
-      req.params.id,
-    );
+    await categoryService.deleteCategory(userId, req.params.id);
 
     return res.json({
-      message: "삭제 완료",
+      message: "카테고리가 삭제되었습니다.",
     });
   } catch (error) {
+    console.error("CATEGORY DELETE ERROR:", error);
+
+    if (
+      error instanceof Error &&
+      error.message === "사용 중인 카테고리는 삭제할 수 없습니다."
+    ) {
+      return res.status(409).json({
+        message: error.message,
+      });
+    }
+
+    if (
+      error instanceof Error &&
+      error.message === "카테고리를 찾을 수 없습니다."
+    ) {
+      return res.status(404).json({
+        message: error.message,
+      });
+    }
+
     return res.status(500).json({
       message: "카테고리 삭제 실패",
     });

@@ -1,13 +1,24 @@
 'use client';
-import { useCategoryList } from '@/hooks/useCategory';
+import { useCategoryDelete, useCategoryList } from '@/hooks/useCategory';
 
 const CategoryList = () => {
   const { data } = useCategoryList();
-
+  const categoryDelete = useCategoryDelete();
+  const handleDeleteCategory = (id: string) => {
+    categoryDelete.mutate(id);
+  };
   return (
     <div>
       {data?.map(category => (
-        <div key={category.name}>{category.name}</div>
+        <ul key={category.id}>
+          <li>{category.type}</li>
+          <li>{category.name}</li>
+          <li>{category.icon}</li>
+          <li>{category.color}</li>
+          <li>
+            <button onClick={() => handleDeleteCategory(category.id!!)}>삭제</button>
+          </li>
+        </ul>
       ))}
     </div>
   );
