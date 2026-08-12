@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSignup } from '@/hooks/useSignup';
+import { useSignup } from '@/hooks/useAuth';
 import { SignupFormValues, signupSchema } from '@/schemas/auth.schema';
 
 const SignupPage = () => {

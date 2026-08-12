@@ -1,12 +1,12 @@
-import { useMutation } from '@tanstack/react-query';
-import { loginApi } from '@/api/auth.api';
-import { setToken } from '@/utils/token';
 import { useRouter } from 'next/navigation';
+import { useMutation } from '@tanstack/react-query';
+import { loginApi, signupApi } from '@/api/auth.api';
 import { useAuthStore } from '@/store/auth.store';
+import { setToken } from '@/utils/token';
 
 export const useLogin = () => {
   const router = useRouter();
-  const loginStore = useAuthStore((state) => state.login);
+  const loginStore = useAuthStore(state => state.login);
 
   return useMutation({
     mutationFn: loginApi,
@@ -15,5 +15,11 @@ export const useLogin = () => {
       loginStore(data.user);
       router.push('/dashboard');
     },
+  });
+};
+
+export const useSignup = () => {
+  return useMutation({
+    mutationFn: signupApi,
   });
 };

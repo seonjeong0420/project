@@ -2,8 +2,8 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { loginSchema, LoginFormValues } from '@/schemas/auth.schema';
-import { useLogin } from '@/hooks/useLogin';
+import { useLogin } from '@/hooks/useAuth';
+import { LoginFormValues, loginSchema } from '@/schemas/auth.schema';
 
 const LoginPage = () => {
   const {
@@ -17,28 +17,14 @@ const LoginPage = () => {
       password: '',
     },
   });
+
   const { mutate, isPending } = useLogin();
   const onSubmit = (data: LoginFormValues) => {
     mutate(data);
   };
   return (
-    <div
-      className="
-flex
-min-h-screen
-items-center
-justify-center
-"
-    >
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="
-flex
-w-[400px]
-flex-col
-gap-4
-"
-      >
+    <div className="flex min-h-screen items-center justify-center">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex w-[400px] flex-col gap-4">
         <h1 className="text-2xl font-bold">로그인</h1>
 
         <input placeholder="이메일" {...register('email')} />
@@ -49,16 +35,7 @@ gap-4
 
         {errors.password && <p className="text-red-500">{errors.password.message}</p>}
 
-        <button
-          type="submit"
-          disabled={isPending}
-          className="
-rounded
-bg-black
-p-2
-text-white
-"
-        >
+        <button type="submit" disabled={isPending} className="rounded bg-black p-2 text-white">
           {isPending ? '로그인중...' : '로그인'}
         </button>
       </form>
