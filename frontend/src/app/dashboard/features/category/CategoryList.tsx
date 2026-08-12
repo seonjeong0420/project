@@ -1,12 +1,20 @@
 'use client';
-import { useCategoryDelete, useCategoryList } from '@/hooks/useCategory';
 
-const CategoryList = () => {
+import { useCategoryDelete, useCategoryList, useCategoryUpdate } from '@/hooks/useCategory';
+import { Category } from '@/types/category';
+
+type Props = {
+  onEdit: (category: Category) => void;
+};
+
+const CategoryList = ({ onEdit }: Props) => {
   const { data } = useCategoryList();
   const categoryDelete = useCategoryDelete();
+  // const categoryUpdate = useCategoryUpdate();
   const handleDeleteCategory = (id: string) => {
     categoryDelete.mutate(id);
   };
+
   return (
     <div>
       {data?.map(category => (
@@ -16,7 +24,10 @@ const CategoryList = () => {
           <li>{category.icon}</li>
           <li>{category.color}</li>
           <li>
-            <button onClick={() => handleDeleteCategory(category.id!!)}>삭제</button>
+            <button onClick={() => handleDeleteCategory(category.id)}>삭제</button>
+          </li>
+          <li>
+            <button onClick={() => onEdit(category)}>수정</button>
           </li>
         </ul>
       ))}

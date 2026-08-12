@@ -9,4 +9,4 @@ export const categorySchema = z.object({
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, '올바른 색상 코드를 입력해주세요.'),
 });
 
-export type CategoryFormValues = z.infer<typeof categorySchema>;
+export type CategoryFormValuesSchema = z.infer<typeof categorySchema>;

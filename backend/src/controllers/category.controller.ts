@@ -17,7 +17,6 @@ export const getCategories = async (req: Request, res: Response) => {
 };
 
 // POST /categories
-
 export const createCategory = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
@@ -39,24 +38,42 @@ export const createCategory = async (req: Request, res: Response) => {
 };
 
 // PATCH /categories/:id
-
 export const updateCategory = async (
   req: Request<{ id: string }>,
   res: Response,
 ) => {
   try {
     const userId = req.user!.id;
-
     const category = await categoryService.updateCategory(
       userId,
-
       req.params.id,
-
       req.body,
     );
 
     return res.json(category);
   } catch (error) {
+    console.error("CATEGORY UPDATE ERROR:", error);
+
+    // 카테고리 없음
+    if (
+      error instanceof Error &&
+      error.message === "카테고리를 찾을 수 없습니다."
+    ) {
+      return res.status(404).json({
+        message: error.message,
+      });
+    }
+
+    // 카테고리 이름 중복
+    if (
+      error instanceof Error &&
+      error.message === "이미 존재하는 카테고리입니다."
+    ) {
+      return res.status(409).json({
+        message: error.message,
+      });
+    }
+
     return res.status(500).json({
       message: "카테고리 수정 실패",
     });
@@ -70,7 +87,6 @@ export const deleteCategory = async (
 ) => {
   try {
     const userId = req.user!.id;
-
     await categoryService.deleteCategory(userId, req.params.id);
 
     return res.json({

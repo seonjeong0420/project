@@ -39,21 +39,45 @@ export const createCategory = async (
 };
 
 // 수정
-
 export const updateCategory = async (
   userId: string,
-
   id: string,
-
   data: UpdateCategoryDto,
 ) => {
-  return prisma.category.update({
+  // 1. 현재 사용자의 카테고리인지 확인
+  const category = await prisma.category.findFirst({
     where: {
       id,
-
       userId,
     },
+  });
 
+  if (!category) {
+    throw new Error("카테고리를 찾을 수 없습니다.");
+  }
+
+  // 2. 이름이 변경되는 경우 중복 확인
+  if (data.name && data.name !== category.name) {
+    const existCategory = await prisma.category.findFirst({
+      where: {
+        userId,
+        name: data.name,
+        id: {
+          not: id,
+        },
+      },
+    });
+
+    if (existCategory) {
+      throw new Error("이미 존재하는 카테고리입니다.");
+    }
+  }
+
+  // 3. 수정
+  return prisma.category.update({
+    where: {
+      id: category.id,
+    },
     data,
   });
 };

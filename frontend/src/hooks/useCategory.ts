@@ -1,6 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { categoryApi, categoryDeleteApi, categoryListApi } from '@/api/category.api';
+import {
+  categoryApi,
+  categoryDeleteApi,
+  categoryListApi,
+  categoryUpdateApi,
+} from '@/api/category.api';
+import { CategoryFormValues } from '@/types/category';
 
 export const useCategoryCreate = () => {
   const queryClient = useQueryClient();
@@ -32,6 +38,17 @@ export const useCategoryDelete = () => {
 
         alert(message);
       }
+    },
+  });
+};
+
+export const useCategoryUpdate = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: CategoryFormValues }) =>
+      categoryUpdateApi(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
 };

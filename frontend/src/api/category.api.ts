@@ -1,8 +1,8 @@
-import { Category } from '@/types/category';
+import { Category, CategoryFormValues } from '@/types/category';
 import { api } from './axios';
 
-export const categoryApi = async (body: Category) => {
-  const { data } = await api.post<Category>('/categories', body);
+export const categoryApi = async (body: CategoryFormValues) => {
+  const { data } = await api.post<CategoryFormValues>('/categories', body);
   return data;
 };
 
@@ -12,6 +12,11 @@ export const categoryListApi = async () => {
 };
 
 export const categoryDeleteApi = async (id: string) => {
-  const {data} = await api.delete<Category>(`/categories/${id}`);
+  const { data } = await api.delete<Category>(`/categories/${id}`);
   return data;
-}
+};
+
+export const categoryUpdateApi = async (id: string, data: CategoryFormValues) => {
+  const { data: response } = await api.patch<Category>(`/categories/${id}`, data);
+  return response;
+};
