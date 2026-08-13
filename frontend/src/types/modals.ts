@@ -1,1 +1,1 @@
-export type ModalType = 'category' | null;
+export type ModalType = 'category' | 'transaction' | null;

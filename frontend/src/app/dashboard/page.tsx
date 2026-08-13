@@ -1,16 +1,18 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTransactionList } from '@/hooks/useTransaction';
 import { useAuthStore } from '@/store/auth.store';
 import { useModalStore } from '@/store/modal.store';
 import { removeToken } from '@/utils/token';
-import TransactionPage from '../transaction/page';
 
 const DashboardPage = () => {
   const user = useAuthStore(state => state.user);
   const logout = useAuthStore(state => state.logout);
   const router = useRouter();
   const openModal = useModalStore(state => state.openModal);
+  const { data } = useTransactionList();
 
   const handleLogout = () => {
     removeToken();
@@ -34,9 +36,35 @@ const DashboardPage = () => {
 
       <button onClick={() => openModal('category')}>카테고리 추가</button>
 
-      <TransactionPage />
+      <main>
+        {data?.slice(0, 5).map(item => (
+          <Link key={item.id} href={`/transactions/${item.id}`}>
+            <div>
+              <span>{item.title}</span>
+              <span>{item.amount.toLocaleString()}원</span>
+            </div>
+          </Link>
+        ))}
+        <Link href={'/transactions'}>더보기</Link>
+      </main>
     </div>
   );
 };
 
 export default DashboardPage;
+
+// 'use client';
+
+// import Link from 'next/link';
+
+// const DashboardPage = () => {
+//   return (
+//     <div>
+//       <h1>Dashboard</h1>
+
+//       <Link href="/transactions/test">거래 상세 열기</Link>
+//     </div>
+//   );
+// };
+
+// export default DashboardPage;

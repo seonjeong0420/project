@@ -4,12 +4,20 @@ import CategoryModal from './features/category/CategoryModal';
 
 type Props = {
   children: ReactNode;
+  modal: ReactNode;
 };
 
-const DashboardLayout = ({ children }: Props) => {
+const DashboardLayout = ({ children, modal }: Props) => {
   return (
+    // <>
+    //   <section>{children}</section>
+    //   {modal}
+    // </>
     <AuthGuard>
-      <section>{children}</section>
+      <section>
+        {children}
+        {modal}
+      </section>
       <CategoryModal />
     </AuthGuard>
   );
