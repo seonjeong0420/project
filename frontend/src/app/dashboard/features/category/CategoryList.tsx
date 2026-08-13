@@ -10,7 +10,6 @@ type Props = {
 const CategoryList = ({ onEdit }: Props) => {
   const { data } = useCategoryList();
   const categoryDelete = useCategoryDelete();
-  // const categoryUpdate = useCategoryUpdate();
   const handleDeleteCategory = (id: string) => {
     categoryDelete.mutate(id);
   };

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
 import { useModalStore } from '@/store/modal.store';
 import { removeToken } from '@/utils/token';
+import TransactionPage from '../transaction/page';
 
 const DashboardPage = () => {
   const user = useAuthStore(state => state.user);
@@ -32,6 +33,8 @@ const DashboardPage = () => {
       </aside>
 
       <button onClick={() => openModal('category')}>카테고리 추가</button>
+
+      <TransactionPage />
     </div>
   );
 };
