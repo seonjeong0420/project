@@ -1,6 +1,6 @@
 'use client';
 
-import CategoryModal from '@/app/dashboard/features/category/CategoryModal';
+import CategoryModal from '@/app/category/CategoryModal';
 import TransactionModal from '@/app/transactions/features/TransactionModal';
 import { useModalStore } from '@/store/modal.store';
 
