@@ -20,6 +20,10 @@ const DashboardPage = () => {
     router.push('/login');
   };
 
+  const handleTransactionsClick = (id: string) => {
+    router.push(`/transactions/${id}`);
+  };
+
   return (
     <div>
       <aside>
@@ -38,12 +42,12 @@ const DashboardPage = () => {
 
       <main>
         {data?.slice(0, 5).map(item => (
-          <Link key={item.id} href={`/transactions/${item.id}`}>
+          <button key={item.id} type="button" onClick={() => handleTransactionsClick(item.id)}>
             <div>
               <span>{item.title}</span>
               <span>{item.amount.toLocaleString()}원</span>
             </div>
-          </Link>
+          </button>
         ))}
         <Link href={'/transactions'}>더보기</Link>
       </main>
@@ -52,19 +56,3 @@ const DashboardPage = () => {
 };
 
 export default DashboardPage;
-
-// 'use client';
-
-// import Link from 'next/link';
-
-// const DashboardPage = () => {
-//   return (
-//     <div>
-//       <h1>Dashboard</h1>
-
-//       <Link href="/transactions/test">거래 상세 열기</Link>
-//     </div>
-//   );
-// };
-
-// export default DashboardPage;

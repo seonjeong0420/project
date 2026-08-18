@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { ModalType } from '@/types/modals';
 
 interface ModalState {
-  modal: ModalType;
+  modal: ModalType | null;
   openModal: (modal: ModalType) => void;
   closeModal: () => void;
 }
