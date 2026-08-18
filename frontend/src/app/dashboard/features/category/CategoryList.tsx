@@ -1,6 +1,6 @@
 'use client';
 
-import { useCategoryDelete, useCategoryList, useCategoryUpdate } from '@/hooks/useCategory';
+import { useCategoryDelete, useCategoryList } from '@/hooks/useCategory';
 import { Category } from '@/types/category';
 
 type Props = {

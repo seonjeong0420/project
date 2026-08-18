@@ -1,9 +1,7 @@
 import { categoryTypeLabel } from '@/constants/transaction';
 import { useTransactionList } from '@/hooks/useTransaction';
 
-type Props = {};
-
-const TransactionList = (props: Props) => {
+const TransactionList = () => {
   const { data } = useTransactionList();
 
   return (
