@@ -1,8 +1,5 @@
 import { ReactNode } from 'react';
 import AuthGuard from '@/components/AuthGuard';
-import ModalProvider from '@/components/provider/ModalProvider';
-
-// import CategoryModal from './features/category/CategoryModal';
 
 type Props = {
   children: ReactNode;
@@ -16,8 +13,6 @@ const DashboardLayout = ({ children, modal }: Props) => {
         {children}
         {modal}
       </section>
-      {/* <CategoryModal /> */}
-      <ModalProvider />
     </AuthGuard>
   );
 };
