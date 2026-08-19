@@ -1,4 +1,4 @@
-import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { transactionCreateApi, transactionListApi } from '@/api/transaction.api';
 
 export const useTransactionList = () => {
@@ -9,7 +9,7 @@ export const useTransactionList = () => {
 };
 
 export const useTransactionCreate = () => {
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: ['transactionCreate'],

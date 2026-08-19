@@ -5,7 +5,11 @@ import { useTransactionCreate } from '@/hooks/useTransaction';
 import { TransactionFormValuesSchema, transactionSchema } from '@/schemas/transaction.schema';
 import { Transaction } from '@/types/transaction';
 
-const TransactionForm = () => {
+type Props = {
+  onClose: () => void;
+};
+
+const TransactionForm = ({ onClose }: Props) => {
   const { data: categoryList = [] } = useCategoryList();
   const transactionCreate = useTransactionCreate();
   const { register, handleSubmit } = useForm<TransactionFormValuesSchema>({
@@ -28,6 +32,7 @@ const TransactionForm = () => {
     transactionCreate.mutate(payload as Transaction, {
       onSuccess() {
         console.log('Transaction created successfully');
+        onClose();
       },
       onError(error) {
         console.error('Error creating transaction:', error);

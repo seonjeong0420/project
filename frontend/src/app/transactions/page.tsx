@@ -7,15 +7,7 @@ const TransactionsPage = () => {
 
   return (
     <>
-      <button
-        onClick={() => {
-          console.log('test');
-          openModal('transaction');
-          console.log('after open:', useModalStore.getState().modal);
-        }}
-      >
-        내역 추가
-      </button>
+      <button onClick={() => openModal('transaction')}>내역 추가</button>
       <TransactionList />
     </>
   );
