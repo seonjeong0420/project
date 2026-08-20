@@ -1,25 +1,28 @@
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCategoryList } from '@/hooks/useCategory';
-import { useTransactionCreate } from '@/hooks/useTransaction';
+import { useTransactionCreate, useTransactionUpdate } from '@/hooks/useTransaction';
 import { TransactionFormValuesSchema, transactionSchema } from '@/schemas/transaction.schema';
 import { Transaction } from '@/types/transaction';
 
 type Props = {
+  transaction: Transaction | null;
   onClose: () => void;
 };
 
-const TransactionForm = ({ onClose }: Props) => {
+const TransactionForm = ({ transaction, onClose }: Props) => {
   const { data: categoryList = [] } = useCategoryList();
   const transactionCreate = useTransactionCreate();
-  const { register, handleSubmit } = useForm<TransactionFormValuesSchema>({
+  const transactionUpdate = useTransactionUpdate();
+  const { register, handleSubmit, reset } = useForm<TransactionFormValuesSchema>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
-      title: '',
-      amount: 0,
-      memo: '',
-      type: 'EXPENSE',
-      categoryId: '',
+      title: transaction?.title ?? '',
+      amount: transaction?.amount ?? 0,
+      memo: transaction?.memo ?? '',
+      type: transaction?.type ?? 'EXPENSE',
+      categoryId: transaction?.categoryId ?? '',
     },
   });
 
@@ -29,6 +32,27 @@ const TransactionForm = ({ onClose }: Props) => {
       date: new Date().toISOString(),
     };
 
+    if (transaction) {
+      // 수정
+      transactionUpdate.mutate(
+        {
+          id: transaction.id,
+          data: {
+            ...data,
+            date: transaction.date,
+          },
+        },
+        {
+          onSuccess() {
+            onClose();
+          },
+        },
+      );
+
+      return;
+    }
+
+    // 추가
     transactionCreate.mutate(payload as Transaction, {
       onSuccess() {
         console.log('Transaction created successfully');
@@ -40,10 +64,20 @@ const TransactionForm = ({ onClose }: Props) => {
     });
   };
 
+  useEffect(() => {
+    reset({
+      title: transaction?.title ?? '',
+      amount: transaction?.amount ?? 0,
+      memo: transaction?.memo ?? '',
+      type: transaction?.type ?? 'EXPENSE',
+      categoryId: transaction?.categoryId ?? '',
+    });
+  }, [transaction, reset]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <fieldset>
-        <legend>거래 내역 추가</legend>
+        <legend>{transaction ? '거래 내역 수정' : '거래 내역 추가'}</legend>
         <ul>
           <li>
             <label htmlFor="title">제목</label>
@@ -76,7 +110,7 @@ const TransactionForm = ({ onClose }: Props) => {
             <input type="text" id="memo" {...register('memo')} />
           </li>
         </ul>
-        <button type="submit">내역추가</button>
+        <button type="submit">{transaction ? '수정하기' : '추가하기'}</button>
       </fieldset>
     </form>
   );

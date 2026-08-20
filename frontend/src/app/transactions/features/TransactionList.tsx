@@ -1,7 +1,12 @@
+import Link from 'next/link';
 import { categoryTypeLabel } from '@/constants/transaction';
 import { useTransactionList } from '@/hooks/useTransaction';
+import { Transaction } from '@/types/transaction';
 
-const TransactionList = () => {
+type Props = {
+  onEdit?: (item: Transaction) => void;
+};
+const TransactionList = ({ onEdit }: Props) => {
   const { data } = useTransactionList();
 
   return (
@@ -10,14 +15,18 @@ const TransactionList = () => {
         {data?.map(item => {
           return (
             <li key={item.id}>
-              <a href="">
+              <Link href={`/transactions/${item.id}`}>
                 <span>{item.title}</span>
                 <span>{categoryTypeLabel[item.type]}</span>
                 <span>{item.memo}</span>
                 <span>{item.amount}</span>
                 <span>{item.date}</span>
-              </a>
-              <button>내역 수정</button>
+              </Link>
+              {onEdit && (
+                <button type="button" onClick={() => onEdit(item)}>
+                  내역 수정
+                </button>
+              )}
             </li>
           );
         })}

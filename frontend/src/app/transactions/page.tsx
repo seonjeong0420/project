@@ -1,4 +1,5 @@
 'use client';
+
 import { useModalStore } from '@/store/modal.store';
 import TransactionList from './features/TransactionList';
 
@@ -8,7 +9,7 @@ const TransactionsPage = () => {
   return (
     <>
       <button onClick={() => openModal('transaction')}>내역 추가</button>
-      <TransactionList />
+      <TransactionList onEdit={item => openModal('transaction', item)} />
     </>
   );
 };

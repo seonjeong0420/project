@@ -3,12 +3,14 @@ import { ModalType } from '@/types/modals';
 
 interface ModalState {
   modal: ModalType | null;
-  openModal: (modal: ModalType) => void;
+  modalData: unknown;
+  openModal: (modal: ModalType, data?: unknown) => void;
   closeModal: () => void;
 }
 
 export const useModalStore = create<ModalState>(set => ({
   modal: null,
-  openModal: modal => set({ modal }),
-  closeModal: () => set({ modal: null }),
+  modalData: null,
+  openModal: (modal, data = null) => set({ modal, modalData: data }),
+  closeModal: () => set({ modal: null, modalData: null }),
 }));
