@@ -4,7 +4,7 @@ import { useTransactionList } from '@/hooks/useTransaction';
 import { Transaction } from '@/types/transaction';
 
 type Props = {
-  onEdit?: (item: Transaction) => void;
+  onEdit: (item: Transaction) => void;
 };
 const TransactionList = ({ onEdit }: Props) => {
   const { data } = useTransactionList();
@@ -22,11 +22,9 @@ const TransactionList = ({ onEdit }: Props) => {
                 <span>{item.amount}</span>
                 <span>{item.date}</span>
               </Link>
-              {onEdit && (
-                <button type="button" onClick={() => onEdit(item)}>
-                  내역 수정
-                </button>
-              )}
+              <button type="button" onClick={() => onEdit(item)}>
+                내역 수정
+              </button>
             </li>
           );
         })}
