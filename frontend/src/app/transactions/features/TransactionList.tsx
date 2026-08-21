@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { categoryTypeLabel } from '@/constants/transaction';
+import { useCategoryList } from '@/hooks/useCategory';
 import { useTransactionList } from '@/hooks/useTransaction';
 import { Transaction } from '@/types/transaction';
 
@@ -8,6 +9,8 @@ type Props = {
 };
 const TransactionList = ({ onEdit }: Props) => {
   const { data } = useTransactionList();
+  const { data: category = [] } = useCategoryList();
+  const categoryMap = new Map(category.map(item => [item.id, item.name]));
 
   return (
     <section>
@@ -18,6 +21,7 @@ const TransactionList = ({ onEdit }: Props) => {
               <Link href={`/transactions/${item.id}`}>
                 <span>{item.title}</span>
                 <span>{categoryTypeLabel[item.type]}</span>
+                <span>{categoryMap.get(item.categoryId) ?? '카테고리 없음'}</span>
                 <span>{item.memo}</span>
                 <span>{item.amount}</span>
                 <span>{item.date}</span>
