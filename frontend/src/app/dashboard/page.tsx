@@ -41,7 +41,7 @@ const DashboardPage = () => {
       <button onClick={() => openModal('category')}>카테고리 추가</button>
 
       <main>
-        {data?.slice(0, 5).map(item => (
+        {data?.data.slice(0, 5).map(item => (
           <button key={item.id} type="button" onClick={() => handleTransactionsClick(item.id)}>
             <div>
               <span>{item.title}</span>

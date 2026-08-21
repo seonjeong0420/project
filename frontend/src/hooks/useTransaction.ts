@@ -6,12 +6,12 @@ import {
   transactionListApi,
   transactionUpdateApi,
 } from '@/api/transaction.api';
-import { TransactionCreate } from '@/types/transaction';
+import { TransactionCreate, TransactionListParams } from '@/types/transaction';
 
-export const useTransactionList = () => {
+export const useTransactionList = (params: TransactionListParams = {}) => {
   return useQuery({
-    queryKey: ['transactions'],
-    queryFn: transactionListApi,
+    queryKey: ['transactions', params],
+    queryFn: () => transactionListApi(params),
   });
 };
 

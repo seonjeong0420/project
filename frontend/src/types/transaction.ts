@@ -15,4 +15,26 @@ export interface Transaction extends TransactionBase {
 
 export type TransactionCreate = Omit<Transaction, 'id'>;
 
-export type TransactionList = Transaction;
+export interface TransactionListParams {
+  page?: number;
+  limit?: number;
+  type?: CategoryType;
+  categoryId?: string;
+  keyword?: string;
+  year?: number;
+  month?: number;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface TransactionPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface TransactionListResponse {
+  data: Transaction[];
+  pagination: TransactionPagination;
+}

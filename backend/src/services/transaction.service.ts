@@ -1,83 +1,89 @@
-import { prisma } from "../prisma/client";
-import { TransactionQuery } from "../types/transaction";
-import {
-  CreateTransactionDto,
-  UpdateTransactionDto,
-} from "../types/transaction";
+import { prisma } from '../prisma/client';
+import { TransactionQuery } from '../types/transaction';
+import { CreateTransactionDto, UpdateTransactionDto } from '../types/transaction';
 
 // 목록 조회
-export const getTransactions = async (
-  userId: string,
+export const getTransactions = async (userId: string, params: TransactionQuery) => {
+  const { page = 1, limit = 10, year, month, type, categoryId, keyword, startDate, endDate } = params;
 
-  query: TransactionQuery,
-) => {
-  const { type, keyword, year, month, startDate, endDate } = query;
+  const skip = (page - 1) * limit;
 
-  const where: any = {
+  const where = {
     userId,
+
+    ...(type && {
+      type,
+    }),
+
+    ...(categoryId && {
+      categoryId,
+    }),
+
+    ...(keyword && {
+      OR: [
+        {
+          title: {
+            contains: keyword,
+            mode: 'insensitive' as const,
+          },
+        },
+        {
+          memo: {
+            contains: keyword,
+            mode: 'insensitive' as const,
+          },
+        },
+      ],
+    }),
+
+    ...(startDate && endDate
+      ? {
+          date: {
+            gte: new Date(startDate),
+            lte: new Date(endDate),
+          },
+        }
+      : year && month
+        ? {
+            date: {
+              gte: new Date(year, month - 1, 1),
+              lt: new Date(year, month, 1),
+            },
+          }
+        : {}),
   };
 
-  // 수입 / 지출 필터
+  const [transactions, total] = await Promise.all([
+    prisma.transaction.findMany({
+      where,
 
-  if (type) {
-    where.type = type;
-  }
-
-  // 검색
-
-  if (keyword) {
-    where.OR = [
-      {
-        title: {
-          contains: keyword,
-          mode: "insensitive",
-        },
+      include: {
+        category: true,
       },
 
-      {
-        memo: {
-          contains: keyword,
-          mode: "insensitive",
-        },
+      orderBy: {
+        date: 'desc',
       },
-    ];
-  }
 
-  // 날짜 조건
+      skip,
+      take: limit,
+    }),
 
-  if (year && month) {
-    const start = new Date(Number(year), Number(month) - 1, 1);
+    prisma.transaction.count({
+      where,
+    }),
+  ]);
 
-    const end = new Date(Number(year), Number(month), 1);
+  return {
+    data: transactions,
 
-    where.date = {
-      gte: start,
-
-      lt: end,
-    };
-  }
-
-  // 기간 검색
-
-  if (startDate && endDate) {
-    where.date = {
-      gte: new Date(startDate),
-
-      lte: new Date(endDate),
-    };
-  }
-
-  return prisma.transaction.findMany({
-    where,
-
-    include: {
-      category: true,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
     },
-
-    orderBy: {
-      date: "desc",
-    },
-  });
+  };
 };
 
 // 상세 조회
@@ -118,7 +124,7 @@ export const createTransaction = async (
   });
 
   if (!category) {
-    throw new Error("카테고리를 찾을 수 없습니다.");
+    throw new Error('카테고리를 찾을 수 없습니다.');
   }
 
   return prisma.transaction.create({

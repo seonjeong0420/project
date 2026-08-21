@@ -1,4 +1,4 @@
-export type TransactionType = "INCOME" | "EXPENSE";
+export type TransactionType = 'INCOME' | 'EXPENSE';
 
 export interface CreateTransactionDto {
   title: string;
@@ -27,17 +27,27 @@ export interface UpdateTransactionDto {
 
   categoryId?: string;
 }
-
 export interface TransactionQuery {
-  type?: "INCOME" | "EXPENSE";
+  page?: number;
+  limit?: number;
+
+  type?: 'INCOME' | 'EXPENSE';
+
+  categoryId?: string;
 
   keyword?: string;
 
-  year?: string;
+  year?: number;
 
-  month?: string;
+  month?: number;
 
   startDate?: string;
 
   endDate?: string;
+}
+export interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
 }

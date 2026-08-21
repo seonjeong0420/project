@@ -1,8 +1,16 @@
-import { Transaction, TransactionCreate, TransactionList } from '@/types/transaction';
+import {
+  Transaction,
+  TransactionCreate,
+  TransactionListParams,
+  TransactionListResponse,
+} from '@/types/transaction';
 import { api } from './axios';
 
-export const transactionListApi = async () => {
-  const { data } = await api.get<TransactionList[]>('/transactions');
+export const transactionListApi = async (params?: TransactionListParams) => {
+  const { data } = await api.get<TransactionListResponse>('/transactions', {
+    params,
+  });
+
   return data;
 };
 
@@ -22,6 +30,6 @@ export const transactionDeleteApi = async (id: string) => {
 };
 
 export const transactionDetailApi = async (id: string) => {
-  const { data } = await api.get<TransactionList>(`/transactions/${id}`);
+  const { data } = await api.get<Transaction>(`/transactions/${id}`);
   return data;
 };
