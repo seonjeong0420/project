@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   transactionCreateApi,
+  transactionDeleteApi,
   transactionDetailApi,
   transactionListApi,
   transactionUpdateApi,
@@ -32,6 +33,17 @@ export const useTransactionUpdate = () => {
     mutationKey: ['transactionUpdate'],
     mutationFn: ({ id, data }: { id: string; data: TransactionCreate }) =>
       transactionUpdateApi(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+    },
+  });
+};
+
+export const useTransactionDelete = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ['transactionDelete'],
+    mutationFn: transactionDeleteApi,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
     },

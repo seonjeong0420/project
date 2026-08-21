@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { categoryTypeLabel } from '@/constants/transaction';
 import { useCategoryList } from '@/hooks/useCategory';
-import { useTransactionList } from '@/hooks/useTransaction';
+import { useTransactionDelete, useTransactionList } from '@/hooks/useTransaction';
 import { Transaction } from '@/types/transaction';
 
 type Props = {
@@ -9,8 +9,13 @@ type Props = {
 };
 const TransactionList = ({ onEdit }: Props) => {
   const { data } = useTransactionList();
+  const transactionDelete = useTransactionDelete();
   const { data: category = [] } = useCategoryList();
   const categoryMap = new Map(category.map(item => [item.id, item.name]));
+
+  const handleDeleteTransaction = (id: string) => {
+    transactionDelete.mutate(id);
+  };
 
   return (
     <section>
@@ -28,6 +33,9 @@ const TransactionList = ({ onEdit }: Props) => {
               </Link>
               <button type="button" onClick={() => onEdit(item)}>
                 내역 수정
+              </button>
+              <button type="button" onClick={() => handleDeleteTransaction(item.id)}>
+                삭제
               </button>
             </li>
           );
