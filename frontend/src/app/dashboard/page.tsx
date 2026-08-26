@@ -6,6 +6,7 @@ import { useTransactionList } from '@/hooks/useTransaction';
 import { useAuthStore } from '@/store/auth.store';
 import { useModalStore } from '@/store/modal.store';
 import { removeToken } from '@/utils/token';
+import TransactionCalendar from './feature/TransactionCalendar';
 
 const DashboardPage = () => {
   const user = useAuthStore(state => state.user);
@@ -41,6 +42,8 @@ const DashboardPage = () => {
       <button onClick={() => openModal('category')}>카테고리 추가</button>
 
       <main>
+        <TransactionCalendar />
+        <br />
         {data?.data.slice(0, 5).map(item => (
           <button key={item.id} type="button" onClick={() => handleTransactionsClick(item.id)}>
             <div>
