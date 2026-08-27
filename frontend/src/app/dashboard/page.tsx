@@ -22,7 +22,7 @@ const DashboardPage = () => {
   };
 
   const handleTransactionsClick = (id: string) => {
-    router.push(`/transactions/${id}`);
+    router.push(`/transactions/detail/${id}`);
   };
 
   return (

@@ -36,13 +36,22 @@ export const getTransactions = async (userId: string, params: TransactionQuery) 
       ],
     }),
 
+    // 날짜 검색
     ...(startDate && endDate
-      ? {
-          date: {
-            gte: new Date(startDate),
-            lte: new Date(endDate),
-          },
-        }
+      ? (() => {
+          const start = new Date(startDate);
+          const end = new Date(endDate);
+
+          // endDate 하루 전체를 포함하기 위해 +1일
+          end.setDate(end.getDate() + 1);
+
+          return {
+            date: {
+              gte: start,
+              lt: end,
+            },
+          };
+        })()
       : year && month
         ? {
             date: {
@@ -87,7 +96,6 @@ export const getTransactions = async (userId: string, params: TransactionQuery) 
 };
 
 // 상세 조회
-
 export const getTransaction = async (
   userId: string,
 
@@ -107,7 +115,6 @@ export const getTransaction = async (
 };
 
 // 생성
-
 export const createTransaction = async (
   userId: string,
 
@@ -147,7 +154,6 @@ export const createTransaction = async (
 };
 
 // 수정
-
 export const updateTransaction = async (
   userId: string,
 
@@ -171,7 +177,6 @@ export const updateTransaction = async (
 };
 
 // 삭제
-
 export const deleteTransaction = async (
   userId: string,
 
@@ -182,6 +187,89 @@ export const deleteTransaction = async (
       id,
 
       userId,
+    },
+  });
+};
+
+// 캘린더에서 사용하기 위한 날짜별 목록 조회
+export const getCalendarTransactions = async (userId: string, year: number, month: number) => {
+  const start = new Date(year, month - 1, 1);
+
+  const end = new Date(year, month, 1);
+
+  const transactions = await prisma.transaction.findMany({
+    where: {
+      userId,
+      date: {
+        gte: start,
+        lt: end,
+      },
+    },
+    select: {
+      date: true,
+      type: true,
+    },
+    orderBy: {
+      date: 'asc',
+    },
+  });
+
+  const summary = new Map<
+    string,
+    {
+      incomeCount: number;
+      expenseCount: number;
+    }
+  >();
+
+  transactions.forEach((transaction) => {
+    const date = transaction.date.toISOString().slice(0, 10);
+
+    if (!summary.has(date)) {
+      summary.set(date, {
+        incomeCount: 0,
+        expenseCount: 0,
+      });
+    }
+
+    const current = summary.get(date)!;
+
+    if (transaction.type === 'INCOME') {
+      current.incomeCount += 1;
+    }
+
+    if (transaction.type === 'EXPENSE') {
+      current.expenseCount += 1;
+    }
+  });
+
+  return Array.from(summary.entries()).map(([date, count]) => ({
+    date,
+    incomeCount: count.incomeCount,
+    expenseCount: count.expenseCount,
+  }));
+};
+
+// 캘린더에 날짜별 조회
+export const getTransactionsByDate = async (userId: string, date: string) => {
+  const start = new Date(`${date}T00:00:00`);
+  const end = new Date(`${date}T00:00:00`);
+
+  end.setDate(end.getDate() + 1);
+
+  return prisma.transaction.findMany({
+    where: {
+      userId,
+      date: {
+        gte: start,
+        lt: end,
+      },
+    },
+    include: {
+      category: true,
+    },
+    orderBy: {
+      date: 'asc',
     },
   });
 };

@@ -38,3 +38,23 @@ export interface TransactionListResponse {
   data: Transaction[];
   pagination: TransactionPagination;
 }
+
+export interface CalendarTransaction {
+  id: string;
+  type: CategoryType;
+  title: string;
+  amount: number;
+  date: string;
+  categoryId: string;
+  memo?: string;
+}
+
+export interface CalendarTransactionSummary {
+  date: string;
+  incomeCount: number;
+  expenseCount: number;
+}
+
+export interface CalendarTransactions {
+  [date: string]: CalendarTransaction[];
+}

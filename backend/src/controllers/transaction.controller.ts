@@ -42,7 +42,6 @@ export const getTransactions = async (req: AuthRequest, res: Response) => {
 };
 
 // GET /transactions/:id
-
 export const getTransaction = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user!.id;
@@ -68,7 +67,6 @@ export const getTransaction = async (req: AuthRequest, res: Response) => {
 };
 
 // POST /transactions
-
 export const createTransaction = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user!.id;
@@ -90,7 +88,6 @@ export const createTransaction = async (req: AuthRequest, res: Response) => {
 };
 
 // PATCH /transactions/:id
-
 export const updateTransaction = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user!.id;
@@ -112,7 +109,6 @@ export const updateTransaction = async (req: AuthRequest, res: Response) => {
 };
 
 // DELETE /transactions/:id
-
 export const deleteTransaction = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user!.id;
@@ -129,6 +125,57 @@ export const deleteTransaction = async (req: AuthRequest, res: Response) => {
   } catch (error) {
     return res.status(500).json({
       message: '삭제 실패',
+    });
+  }
+};
+
+//캘린더
+export const getCalendarTransactions = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user!.id;
+
+    const year = Number(req.query.year);
+    const month = Number(req.query.month);
+
+    if (!year || !month) {
+      return res.status(400).json({
+        message: 'year와 month는 필수입니다.',
+      });
+    }
+
+    if (month < 1 || month > 12) {
+      return res.status(400).json({
+        message: 'month는 1~12 사이여야 합니다.',
+      });
+    }
+
+    const result = await transactionService.getCalendarTransactions(userId, year, month);
+
+    return res.json(result);
+  } catch (error) {
+    console.error('CALENDAR TRANSACTION ERROR:', error);
+
+    return res.status(500).json({
+      message: '캘린더 내역 조회 실패',
+    });
+  }
+};
+
+// 날짜별 조회
+export const getTransactionsByDate = async (req: AuthRequest<{ date: string }>, res: Response) => {
+  try {
+    const userId = req.user!.id;
+
+    const { date } = req.params;
+
+    const transactions = await transactionService.getTransactionsByDate(userId, date);
+
+    return res.json(transactions);
+  } catch (error) {
+    console.error('TRANSACTION DATE ERROR:', error);
+
+    return res.status(500).json({
+      message: '날짜별 내역 조회 실패',
     });
   }
 };

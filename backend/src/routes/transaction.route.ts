@@ -1,27 +1,25 @@
-import { Router } from "express";
+import { Router } from 'express';
 
-import { authMiddleware } from "../middleware/auth.middleware";
+import { authMiddleware } from '../middleware/auth.middleware';
 
-import {
-  getTransactions,
-  getTransaction,
-  createTransaction,
-  updateTransaction,
-  deleteTransaction,
-} from "../controllers/transaction.controller";
+import { getTransactions, getTransaction, createTransaction, updateTransaction, deleteTransaction, getCalendarTransactions, getTransactionsByDate } from '../controllers/transaction.controller';
 
 const router = Router();
 
 router.use(authMiddleware);
 
-router.get("/", getTransactions);
+router.get('/calendar', getCalendarTransactions);
 
-router.get("/:id", getTransaction);
+router.get('/date/:date', getTransactionsByDate);
 
-router.post("/", createTransaction);
+router.get('/', getTransactions);
 
-router.patch("/:id", updateTransaction);
+router.get('/:id', getTransaction);
 
-router.delete("/:id", deleteTransaction);
+router.post('/', createTransaction);
+
+router.patch('/:id', updateTransaction);
+
+router.delete('/:id', deleteTransaction);
 
 export default router;

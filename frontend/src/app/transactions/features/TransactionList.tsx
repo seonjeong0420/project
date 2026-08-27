@@ -34,7 +34,7 @@ const TransactionList = ({ params, onEdit, onChange }: Props) => {
         {data?.data.map(item => {
           return (
             <li key={item.id}>
-              <Link href={`/transactions/${item.id}`}>
+              <Link href={`/transactions/detail/${item.id}`}>
                 <span>{item.title}</span>
                 <span>{categoryTypeLabel[item.type]}</span>
                 <span>{categoryMap.get(item.categoryId) ?? '카테고리 없음'}</span>

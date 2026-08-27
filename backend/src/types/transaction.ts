@@ -51,3 +51,13 @@ export interface Pagination {
   total: number;
   totalPages: number;
 }
+export interface CalendarTransactionSummary {
+  date: string;
+  incomeCount: number;
+  expenseCount: number;
+}
+
+export interface CalendarTransactionQuery {
+  year: number;
+  month: number;
+}

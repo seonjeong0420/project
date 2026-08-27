@@ -1,4 +1,5 @@
 import {
+  CalendarTransactionSummary,
   Transaction,
   TransactionCreate,
   TransactionListParams,
@@ -31,5 +32,20 @@ export const transactionDeleteApi = async (id: string) => {
 
 export const transactionDetailApi = async (id: string) => {
   const { data } = await api.get<Transaction>(`/transactions/${id}`);
+  return data;
+};
+
+export const transactionCalendarApi = async (year: number, month: number) => {
+  const { data } = await api.get<CalendarTransactionSummary[]>('/transactions/calendar', {
+    params: {
+      year,
+      month,
+    },
+  });
+  return data;
+};
+
+export const transactionDateApi = async (date: string) => {
+  const { data } = await api.get<Transaction[]>(`/transactions/date/${date}`);
   return data;
 };

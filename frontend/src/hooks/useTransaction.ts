@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  transactionCalendarApi,
   transactionCreateApi,
+  transactionDateApi,
   transactionDeleteApi,
   transactionDetailApi,
   transactionListApi,
@@ -54,5 +56,20 @@ export const useTransactionDetail = (id: string) => {
   return useQuery({
     queryKey: ['transactionDetail', id],
     queryFn: () => transactionDetailApi(id),
+  });
+};
+
+export const useTransactionCalendar = (year: number, month: number) => {
+  return useQuery({
+    queryKey: ['transactionCalendar', year, month],
+    queryFn: () => transactionCalendarApi(year, month),
+  });
+};
+
+export const useTransactionDate = (date: string) => {
+  return useQuery({
+    queryKey: ['transactions', 'date', date],
+    queryFn: () => transactionDateApi(date),
+    enabled: !!date,
   });
 };
